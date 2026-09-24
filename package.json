@@ -1,0 +1,13 @@
+{
+  "name": "maritimo-voos-api",
+  "version": "1.0.0",
+  "description": "API REST para voos offshore do Marítimo Pro",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
