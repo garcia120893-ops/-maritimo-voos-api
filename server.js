@@ -5,11 +5,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rota robusta de voos offshore para a API do Marítimo Pro
+// Rota de voos offshore
 app.get('/api/voos', (req, res) => {
   const date = req.query.date || new Date().toISOString().split('T')[0];
-  
-  // Semente baseada na data para gerar dados dinâmicos consistentes por dia
   const dateObj = new Date(date);
   const seed = dateObj.getDate() + (dateObj.getMonth() + 1) * 31;
 
@@ -81,75 +79,6 @@ app.get('/api/voos', (req, res) => {
       destinationUnit: 'P-76',
       unitAlias: 'FPSO P-76 (Búzios)',
       status: 'landed'
-    },
-    {
-      id: `6_${seed}`,
-      flightNumber: `#50${seed}607`,
-      time: '06:35',
-      actualTime: '07:51',
-      aircraftReg: 'PR-JHI',
-      aircraftModel: 'AW139',
-      company: 'Líder',
-      origin: 'São Tomé (SBST)',
-      originCode: 'SBST',
-      destinationUnit: 'P-31',
-      unitAlias: 'FPSO P-31',
-      status: 'landed'
-    },
-    {
-      id: `7_${seed}`,
-      flightNumber: `#50${seed}685`,
-      time: '06:45',
-      aircraftReg: 'PR-OHV',
-      aircraftModel: 'AW139',
-      company: 'Omni',
-      origin: 'Maricá (SBMI)',
-      originCode: 'SBMI',
-      destinationUnit: 'P-74',
-      unitAlias: 'FPSO P-74 (Búzios)',
-      status: 'airborne'
-    },
-    {
-      id: `8_${seed}`,
-      flightNumber: `#50${seed}696`,
-      time: '06:45',
-      actualTime: '07:12',
-      aircraftReg: 'PS-BTO',
-      aircraftModel: 'AW139',
-      company: 'Bristow',
-      origin: 'Macaé (SBME)',
-      originCode: 'SBME',
-      destinationUnit: 'P-55',
-      unitAlias: 'Plataforma P-55',
-      status: 'landed'
-    },
-    {
-      id: `9_${seed}`,
-      flightNumber: `#50${seed}700`,
-      time: '07:25',
-      actualTime: '08:15',
-      aircraftReg: 'PR-BGT',
-      aircraftModel: 'S-92A',
-      company: 'Omni',
-      origin: 'Maricá (SBMI)',
-      originCode: 'SBMI',
-      destinationUnit: 'P-75',
-      unitAlias: 'FPSO P-75 (Búzios)',
-      status: 'landed'
-    },
-    {
-      id: `10_${seed}`,
-      flightNumber: `#50${seed}701`,
-      time: '08:10',
-      actualTime: '08:42',
-      aircraftReg: 'PR-JKM',
-      aircraftModel: 'S-92A',
-      company: 'Líder',
-      origin: 'Vitória (SBVT)',
-      originCode: 'SBVT',
-      destinationUnit: 'P-58',
-      unitAlias: 'FPSO P-58 (Parque das Baleias)',
-      status: 'landed'
     }
   ];
 
@@ -157,6 +86,83 @@ app.get('/api/voos', (req, res) => {
     date: date,
     total: flights.length,
     flights: flights
+  });
+});
+
+// Nova rota de condições meteorológicas (METAR / Clima nas Bases Offshore)
+app.get('/api/clima', (req, res) => {
+  const weatherStations = [
+    {
+      base: 'Macaé',
+      code: 'SBME',
+      condition: 'Teto Baixo (Voo Condicionado)',
+      statusColor: 'yellow',
+      wind: '080@12KT',
+      visibility: '5000M',
+      ceiling: 'OVC008',
+      temp: '24°C',
+      updatedAt: new Date().toLocaleTimeString('pt-BR')
+    },
+    {
+      base: 'Jacarepaguá',
+      code: 'SBJR',
+      condition: 'VFR / Bom para Voo',
+      statusColor: 'green',
+      wind: '110@08KT',
+      visibility: '10KM+',
+      ceiling: 'SCT025',
+      temp: '27°C',
+      updatedAt: new Date().toLocaleTimeString('pt-BR')
+    },
+    {
+      base: 'São Tomé',
+      code: 'SBST',
+      condition: 'VFR / Bom para Voo',
+      statusColor: 'green',
+      wind: '090@10KT',
+      visibility: '10KM+',
+      ceiling: 'FEW020',
+      temp: '26°C',
+      updatedAt: new Date().toLocaleTimeString('pt-BR')
+    },
+    {
+      base: 'Maricá',
+      code: 'SBMI',
+      condition: 'VFR / Bom para Voo',
+      statusColor: 'green',
+      wind: '100@09KT',
+      visibility: '10KM+',
+      ceiling: 'FEW022',
+      temp: '26°C',
+      updatedAt: new Date().toLocaleTimeString('pt-BR')
+    },
+    {
+      base: 'Vitória',
+      code: 'SBVT',
+      condition: 'VFR / Bom para Voo',
+      statusColor: 'green',
+      wind: '070@11KT',
+      visibility: '9000M',
+      ceiling: 'SCT030',
+      temp: '28°C',
+      updatedAt: new Date().toLocaleTimeString('pt-BR')
+    },
+    {
+      base: 'Cabo Frio',
+      code: 'SBCB',
+      condition: 'Restrição de Vento / Teto',
+      statusColor: 'yellow',
+      wind: '130@18G25KT',
+      visibility: '6000M',
+      ceiling: 'BKN012',
+      temp: '23°C',
+      updatedAt: new Date().toLocaleTimeString('pt-BR')
+    }
+  ];
+
+  res.json({
+    source: 'DECEA / AISWEB (Simulado em Tempo Real)',
+    stations: weatherStations
   });
 });
 
